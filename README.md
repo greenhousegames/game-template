@@ -1,1 +1,1 @@
-# game-template
+# smash-dot

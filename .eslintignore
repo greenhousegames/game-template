@@ -1,0 +1,3 @@
+app/game/*
+app/game/objects/*
+app/game/states/*

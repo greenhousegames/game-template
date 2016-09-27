@@ -1,0 +1,57 @@
+{
+  "name": "@greenhousegames/game-template",
+  "version": "0.0.0",
+  "scripts": {
+    "prestart": "(rm -r public || true) && mkdir public",
+    "start": "npm run assetgen && brunch watch --server",
+    "preassetgen": "(rm -r app/assets/game || true) && mkdir app/assets/game",
+    "assetgen": "gulp",
+    "postassetgen": "cp -R dist/assets/ app/assets/game/",
+    "prebuild": "(rm -r dist || true) && mkdir dist",
+    "build": "babel app/game/ -d dist/ && npm run assetgen",
+    "version": "npm run build && git add -A dist",
+    "postversion": "git push && git push --tags && npm publish"
+  },
+  "main": "dist/index.js",
+  "dependencies": {
+    "firebase": "~3.4.0",
+    "phaser": "^2.6.2",
+    "phaser-ads": "^0.7.5",
+    "rsvp": "^3.2.1"
+  },
+  "devDependencies": {
+    "auto-reload-brunch": "^2.0.0",
+    "babel-brunch": "~6.0.0",
+    "babel-cli": "^6.11.4",
+    "babel-preset-es2015": "~6.3.13",
+    "brunch": "^2.4.0",
+    "clean-css-brunch": "^2.0.0",
+    "css-brunch": "^2.0.0",
+    "eslint": "^3.0.0",
+    "eslint-brunch": "^3.9.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp.spritesmith": "^6.2.1",
+    "html-pages-brunch": "^2.0.0",
+    "jasmine-core": "^2.5.0",
+    "javascript-brunch": "^2.0.0",
+    "karma": "^1.2.0",
+    "karma-babel-preprocessor": "^6.0.1",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-jasmine": "^1.0.2",
+    "karma-spec-reporter": "^0.0.26",
+    "merge-stream": "^1.0.0",
+    "sass-brunch": "^1.8.10",
+    "uglify-js-brunch": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/greenhousegames/game-template.git"
+  },
+  "author": "Greenhouse Games, LLC",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/greenhousegames/game-template/issues"
+  },
+  "homepage": "https://github.com/greenhousegames/game-template#readme"
+}
