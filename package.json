@@ -1,6 +1,6 @@
 {
   "name": "@greenhousegames/game-template",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "prestart": "(rm -r public || true) && mkdir public",
     "start": "npm run assetgen && brunch watch --server",
