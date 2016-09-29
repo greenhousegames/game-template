@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var concat = require('gulp-concat');
 var spritesmith = require('gulp.spritesmith');
 
-var PROJECT_NAME = "game-name";
+var PROJECT_NAME = "game-template";
 
 gulp.task('spritesheet-json', function() {
   // generate PNG and JSON files for game images
