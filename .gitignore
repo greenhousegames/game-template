@@ -2,7 +2,7 @@
 node_modules
 bower_components
 cordova
-npm-debug.log
+npm-debug.log*
 firebase-debug.log
 public
 app/assets/game
