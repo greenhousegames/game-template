@@ -21,22 +21,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Game = function (_Phaser$Game) {
   _inherits(Game, _Phaser$Game);
 
-  function Game(firebase, assetPath) {
+  function Game(config) {
     _classCallCheck(this, Game);
 
     var _this = _possibleConstructorReturn(this, (Game.__proto__ || Object.getPrototypeOf(Game)).call(this, window.innerWidth, window.innerHeight, Phaser.AUTO, 'game'));
 
-    assetPath = assetPath || '/';
-
-    _this.data = {
-      name: 'game-template',
-      assetPath: assetPath.endsWith('/') ? assetPath : assetPath + '/',
-      ads: {
-        ima3: 'http://googleads.g.doubleclick.net/pagead/ads?ad_type=video&client=ca-games-pub-4968145218643279&videoad_start_delay=0&description_url=http%3A%2F%2Fwww.google.com&max_ad_duration=40000&adtest=on'
-      }
-    };
-
-    _this.firebase = firebase;
+    _this._greenhouseconfig = config;
 
     _this.state.add('boot', _boot2.default);
     _this.state.add('menu', _menu2.default);
