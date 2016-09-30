@@ -11,5 +11,8 @@ const firebaseInst = firebase.initializeApp({
   storageBucket: ''
 });
 
-const game = new Game(firebaseInst, 'game');
+const game = new Game({
+  firebase: firebaseInst,
+  assetPath: 'game'
+});
 game.state.start('boot');
