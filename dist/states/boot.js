@@ -34,10 +34,11 @@ var BootState = function (_Phaser$State) {
 
       // enable greenhouse plugin
       this.game.greenhouse = this.game.plugins.add(new _greenhousePhaserPlugin2.default(this));
-      this.game.greenhouse.configure({
+      this.game.greenhouse.initialize({
         name: 'game-template',
         firebase: this.game._greenhouseconfig.firebase,
-        assetPath: this.game._greenhouseconfig.assetPath || '/'
+        assetPath: this.game._greenhouseconfig.assetPath || '/',
+        responsive: true
       });
 
       // enable ads plugin
@@ -45,9 +46,7 @@ var BootState = function (_Phaser$State) {
       var provider = new Fabrique.AdProvider.Ima3(this.game, 'http://googleads.g.doubleclick.net/pagead/ads?ad_type=video&client=ca-games-pub-4968145218643279&videoad_start_delay=0&description_url=http%3A%2F%2Fwww.google.com&max_ad_duration=40000&adtest=on');
       this.game.ads.setAdProvider(provider);
 
-      this.game.scale.setResizeCallback(this.game.resizeDevice, this.game);
       this.game.input.maxPointers = 2;
-      this.game.resizeDevice();
     }
   }, {
     key: 'update',

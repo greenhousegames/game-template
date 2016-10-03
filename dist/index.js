@@ -1,7 +1,5 @@
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 var _boot = require('./states/boot');
 
 var _boot2 = _interopRequireDefault(_boot);
@@ -9,6 +7,8 @@ var _boot2 = _interopRequireDefault(_boot);
 var _menu = require('./states/menu');
 
 var _menu2 = _interopRequireDefault(_menu);
+
+require('@greenhousegames/firebase-game-storage');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32,13 +32,6 @@ var Game = function (_Phaser$Game) {
     _this.state.add('menu', _menu2.default);
     return _this;
   }
-
-  _createClass(Game, [{
-    key: 'resizeDevice',
-    value: function resizeDevice() {
-      this.scale.setGameSize(window.innerWidth, window.innerHeight);
-    }
-  }]);
 
   return Game;
 }(Phaser.Game);
