@@ -1,5 +1,6 @@
 import boot from './states/boot';
 import menu from './states/menu';
+import GameStorage from '@greenhousegames/firebase-game-storage';
 
 class Game extends Phaser.Game {
   constructor(config) {
@@ -8,10 +9,6 @@ class Game extends Phaser.Game {
 
     this.state.add('boot', boot);
     this.state.add('menu', menu);
-  }
-
-  resizeDevice() {
-    this.scale.setGameSize(window.innerWidth, window.innerHeight);
   }
 }
 

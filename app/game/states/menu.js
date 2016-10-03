@@ -10,16 +10,23 @@ class MenuState extends Phaser.State {
   create() {
     this.game.stage.backgroundColor = '#ffffff';
 
-    this.homeButton = this.game.add.sprite(this.game.width/2, this.game.height/2, this.game.greenhouse.name, 'logo');
+    this.homeButton = this.game.add.sprite(0, 0, this.game.greenhouse.name, 'logo');
     this.homeButton.anchor.setTo(0.5, 0.5);
     this.homeButton.inputEnabled = true;
     this.homeButton.tint = 0x000000;
     this.homeButton.events.onInputDown.add(() => {
       window.location = 'http://www.greenhousegames.com';
     }, this);
+    this.game.greenhouse.responsive.register(this.responsive, this);
+    this.responsive();
+  }
+
+  responsive() {
+    this.homeButton.alignIn(this.game.world.bounds, Phaser.CENTER);
   }
 
   shutdown() {
+    this.game.greenhouse.responsive.unregister(this.responsive, this);
   }
 }
 
