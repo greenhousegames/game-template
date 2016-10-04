@@ -12,9 +12,15 @@ class BootState extends Phaser.State {
     this.game.greenhouse = this.game.plugins.add(new GreenhousePlugin(this));
     this.game.greenhouse.initialize({
       name: 'game-template',
-      firebase: this.game._greenhouseconfig.firebase,
       assetPath: this.game._greenhouseconfig.assetPath || '/',
-      responsive: true
+      responsive: true,
+      firebase: this.game._greenhouseconfig.firebase,
+      metrics: {
+        'aclicked': ['sum'],
+        'aclickedtime': ['last'],
+        'bclicked': ['sum'],
+        'bclickedtime': ['last']
+      }
     });
 
     // enable ads plugin
@@ -24,7 +30,7 @@ class BootState extends Phaser.State {
 
     this.game.input.maxPointers = 2;
 
-    this.game.greenhouse.storage.requireAuth().then(() => this.game.state.start('menu'));
+    this.game.greenhouse.storage.auth.requireAuth().then(() => this.game.state.start('menu'));
   }
 
   update() {

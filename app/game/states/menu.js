@@ -1,3 +1,5 @@
+import firebase from 'firebase';
+
 class MenuState extends Phaser.State {
   constructor(game) {
     super(game);
@@ -16,34 +18,17 @@ class MenuState extends Phaser.State {
   create() {
     this.game.stage.backgroundColor = '#ffffff';
 
-    this.game.greenhouse.storage.queryUserStatValue('aclicked').then((num) => {
-      this.timesAClickedByUser = num;
-      this.aButtonText.text = 'Clicked by You: ' + this.timesAClickedByUser;
-    });
-    this.game.greenhouse.storage.queryUserStatValue('bclicked').then((num) => {
-      this.timesBClickedByUser = num;
-      this.bButtonText.text = 'Clicked by You: ' + this.timesBClickedByUser;
-    });
-    this.game.greenhouse.storage.queryTotalGamesWithStat('aclicked').then((num) => {
-      this.timesAClickedByAnyone = num;
-      this.aButtonText2.text = 'Clicked by Anyone: ' + this.timesAClickedByAnyone;
-    });
-    this.game.greenhouse.storage.queryTotalGamesWithStat('bclicked').then((num) => {
-      this.timesBClickedByAnyone = num;
-      this.bButtonText2.text = 'Clicked by Anyone: ' + this.timesBClickedByAnyone;
-    });
-
-    this.game.greenhouse.storage.onGamePlayed((snapshot) => {
-      const game = snapshot.val();
+    this.initMetrics();
+    this.game.greenhouse.storage.onGamePlayed((game) => {
       if (game.aclicked) {
         this.timesAClickedByAnyone++;
-        this.aButtonText2.text = 'Clicked by Anyone: ' + this.timesAClickedByAnyone;
-        this.aButtonText4.text = 'Last Clicked by Anyone: ' + game.endedAt;
+        this.lastAClickedByAnyone = game.endedAt;
       } else {
         this.timesBClickedByAnyone++;
-        this.bButtonText2.text = 'Clicked by Anyone: ' + this.timesBClickedByAnyone;
-        this.bButtonText4.text = 'Last Clicked by Anyone: ' + game.endedAt;
+        this.lastBClickedByAnyone = game.endedAt;
       }
+
+      this.updateText();
     });
 
     this.aButton = this.game.add.sprite(0, 0, this.game.greenhouse.name, 'a');
@@ -53,11 +38,12 @@ class MenuState extends Phaser.State {
     this.aButton.inputEnabled = true;
     this.aButton.events.onInputDown.add(() => {
       this.timesAClickedByUser++;
-      this.aButtonText.text = 'Clicked by You: ' + this.timesAClickedByUser;
-      this.aButtonText3.text = 'Last Clicked by You: ' + (new Date()).getTime();
+      this.lastAClickedByUser = (new Date()).getTime();
+      this.updateText();
 
       this.game.greenhouse.storage.saveGamePlayed({
-        aclicked: this.timesAClickedByUser
+        aclicked: 1,
+        aclickedtime: firebase.database.ServerValue.TIMESTAMP
       });
     }, this);
 
@@ -68,31 +54,32 @@ class MenuState extends Phaser.State {
     this.bButton.inputEnabled = true;
     this.bButton.events.onInputDown.add(() => {
       this.timesBClickedByUser++;
-      this.bButtonText.text = 'Clicked by You: ' + this.timesBClickedByUser;
-      this.bButtonText3.text = 'Last Clicked by You: ' + (new Date()).getTime();
+      this.lastBClickedByUser = (new Date()).getTime();
+      this.updateText();
 
       this.game.greenhouse.storage.saveGamePlayed({
-        bclicked: this.timesBClickedByUser
+        bclicked: 1,
+        bclickedtime: firebase.database.ServerValue.TIMESTAMP
       });
     }, this);
 
     this.aButtonText = this.game.add.text();
-    this.aButtonText.text = 'Clicked by You: 0';
+    this.aButtonText.text = 'Clicked by You: n/a';
     this.aButtonText2 = this.game.add.text();
-    this.aButtonText2.text = 'Clicked by Anyone: 0';
+    this.aButtonText2.text = 'Clicked by Anyone: n/a';
     this.aButtonText3 = this.game.add.text();
-    this.aButtonText3.text = 'Last Clicked by You: never';
+    this.aButtonText3.text = 'Last by You: n/a';
     this.aButtonText4 = this.game.add.text();
-    this.aButtonText4.text = 'Last Clicked by Anyone: never';
+    this.aButtonText4.text = 'Last by Anyone: n/a';
 
     this.bButtonText = this.game.add.text();
-    this.bButtonText.text = 'Clicked by You: 0';
+    this.bButtonText.text = 'Clicked by You: n/a';
     this.bButtonText2 = this.game.add.text();
-    this.bButtonText2.text = 'Clicked by Anyone: 0';
+    this.bButtonText2.text = 'Clicked by Anyone: n/a';
     this.bButtonText3 = this.game.add.text();
-    this.bButtonText3.text = 'Last Clicked by You: never';
+    this.bButtonText3.text = 'Last by You: n/a';
     this.bButtonText4 = this.game.add.text();
-    this.bButtonText4.text = 'Last Clicked by Anyone: never';
+    this.bButtonText4.text = 'Last by Anyone: n/a';
 
     this.homeButton = this.game.add.sprite(0, 0, this.game.greenhouse.name, 'logo');
     this.homeButton.anchor.setTo(0, 1);
@@ -107,6 +94,63 @@ class MenuState extends Phaser.State {
   }
 
   update() {
+  }
+
+  initMetrics() {
+    this.game.greenhouse.storage.metrics.getMetrics().then((metrics) => {
+      if (metrics.aclicked) {
+        this.timesAClickedByUser = metrics.aclicked.sum || 0;
+      }
+      if (metrics.aclickedtime && metrics.aclickedtime.last) {
+        this.lastAClickedByUser = metrics.aclickedtime.last;
+      }
+      if (metrics.bclicked) {
+        this.timesBClickedByUser = metrics.bclicked.sum || 0;
+      }
+      if (metrics.bclickedtime && metrics.bclickedtime.last) {
+        this.lastBClickedByUser = metrics.bclickedtime.last;
+      }
+
+      this.updateText();
+    });
+
+    this.game.greenhouse.storage.metrics.getTopMetrics('aclickedtime', 'last', 1).then((values) => {
+      if (values[0]) {
+        this.lastAClickedByAnyone = values[0];
+        this.updateText();
+      }
+    });
+
+    this.game.greenhouse.storage.metrics.getTotal('aclicked', 'greater', 0).then((value) => {
+      this.timesAClickedByAnyone = value;
+      this.updateText();
+    });
+
+    this.game.greenhouse.storage.metrics.getTopMetrics('bclickedtime', 'last', 1).then((values) => {
+      if (values[0]) {
+        this.lastBClickedByAnyone = values[0];
+        this.updateText();
+      }
+    });
+
+    this.game.greenhouse.storage.metrics.getTotal('bclicked', 'greater', 0).then((value) => {
+      this.timesBClickedByAnyone = value;
+      this.updateText();
+    });
+  }
+
+  updateText() {
+    this.aButtonText.text = 'Clicked by You: ' + this.timesAClickedByUser;
+    this.aButtonText2.text = 'Clicked by Anyone: ' + this.timesAClickedByAnyone;
+    this.aButtonText3.text = 'Last by You: ' + (new Date(this.lastAClickedByUser)).toLocaleString();
+    this.aButtonText4.text = 'Last by Anyone: ' + (new Date(this.lastAClickedByAnyone)).toLocaleString();
+
+    this.bButtonText.text = 'Clicked by You: ' + this.timesBClickedByUser;
+    this.bButtonText2.text = 'Clicked by Anyone: ' + this.timesBClickedByAnyone;
+    this.bButtonText3.text = 'Last by You: ' + (new Date(this.lastBClickedByUser)).toLocaleString();
+    this.bButtonText4.text = 'Last by Anyone: ' + (new Date(this.lastBClickedByAnyone)).toLocaleString();
+
+    this.responsive();
   }
 
   responsive() {
