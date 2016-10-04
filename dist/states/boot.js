@@ -30,15 +30,23 @@ var BootState = function (_Phaser$State) {
   _createClass(BootState, [{
     key: 'create',
     value: function create() {
+      var _this2 = this;
+
       this.game.stage.backgroundColor = '#ffffff';
 
       // enable greenhouse plugin
       this.game.greenhouse = this.game.plugins.add(new _greenhousePhaserPlugin2.default(this));
       this.game.greenhouse.initialize({
         name: 'game-template',
-        firebase: this.game._greenhouseconfig.firebase,
         assetPath: this.game._greenhouseconfig.assetPath || '/',
-        responsive: true
+        responsive: true,
+        firebase: this.game._greenhouseconfig.firebase,
+        metrics: {
+          'aclicked': ['sum'],
+          'aclickedtime': ['last'],
+          'bclicked': ['sum'],
+          'bclickedtime': ['last']
+        }
       });
 
       // enable ads plugin
@@ -47,12 +55,14 @@ var BootState = function (_Phaser$State) {
       this.game.ads.setAdProvider(provider);
 
       this.game.input.maxPointers = 2;
+
+      this.game.greenhouse.storage.auth.requireAuth().then(function () {
+        return _this2.game.state.start('menu');
+      });
     }
   }, {
     key: 'update',
-    value: function update() {
-      this.game.state.start('menu');
-    }
+    value: function update() {}
   }]);
 
   return BootState;
