@@ -23,10 +23,11 @@ class BootState extends Phaser.State {
     this.game.ads.setAdProvider(provider);
 
     this.game.input.maxPointers = 2;
+
+    this.game.greenhouse.storage.requireAuth().then(() => this.game.state.start('menu'));
   }
 
   update() {
-    this.game.state.start('menu');
   }
 }
 
