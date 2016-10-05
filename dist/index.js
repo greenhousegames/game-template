@@ -8,7 +8,7 @@ var _menu = require('./states/menu');
 
 var _menu2 = _interopRequireDefault(_menu);
 
-require('@greenhousegames/firebase-game-storage');
+require('firebase-reporting');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

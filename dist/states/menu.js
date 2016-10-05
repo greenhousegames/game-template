@@ -46,7 +46,7 @@ var MenuState = function (_Phaser$State) {
       this.game.stage.backgroundColor = '#ffffff';
 
       this.initMetrics();
-      this.game.greenhouse.storage.onGamePlayed(function (game) {
+      this.game.greenhouse.onGamePlayed(function (game) {
         if (game.aclicked) {
           _this2.timesAClickedByAnyone++;
           _this2.lastAClickedByAnyone = game.endedAt;
@@ -68,7 +68,7 @@ var MenuState = function (_Phaser$State) {
         _this2.lastAClickedByUser = new Date().getTime();
         _this2.updateText();
 
-        _this2.game.greenhouse.storage.saveGamePlayed({
+        _this2.game.greenhouse.saveGamePlayed({
           aclicked: 1,
           aclickedtime: _firebase2.default.database.ServerValue.TIMESTAMP
         });
@@ -84,7 +84,7 @@ var MenuState = function (_Phaser$State) {
         _this2.lastBClickedByUser = new Date().getTime();
         _this2.updateText();
 
-        _this2.game.greenhouse.storage.saveGamePlayed({
+        _this2.game.greenhouse.saveGamePlayed({
           bclicked: 1,
           bclickedtime: _firebase2.default.database.ServerValue.TIMESTAMP
         });
@@ -127,7 +127,7 @@ var MenuState = function (_Phaser$State) {
     value: function initMetrics() {
       var _this3 = this;
 
-      this.game.greenhouse.storage.metrics.getMetrics().then(function (metrics) {
+      this.game.greenhouse.reporting.getMetrics().then(function (metrics) {
         if (metrics.aclicked) {
           _this3.timesAClickedByUser = metrics.aclicked.sum || 0;
         }
@@ -144,26 +144,26 @@ var MenuState = function (_Phaser$State) {
         _this3.updateText();
       });
 
-      this.game.greenhouse.storage.metrics.getTopMetrics('aclickedtime', 'last', 1).then(function (values) {
+      this.game.greenhouse.reporting.getTopMetrics('aclickedtime', 'last', 1).then(function (values) {
         if (values[0]) {
           _this3.lastAClickedByAnyone = values[0];
           _this3.updateText();
         }
       });
 
-      this.game.greenhouse.storage.metrics.getTotal('aclicked', 'greater', 0).then(function (value) {
+      this.game.greenhouse.reporting.getTotal('aclicked', 'greater', 0).then(function (value) {
         _this3.timesAClickedByAnyone = value;
         _this3.updateText();
       });
 
-      this.game.greenhouse.storage.metrics.getTopMetrics('bclickedtime', 'last', 1).then(function (values) {
+      this.game.greenhouse.reporting.getTopMetrics('bclickedtime', 'last', 1).then(function (values) {
         if (values[0]) {
           _this3.lastBClickedByAnyone = values[0];
           _this3.updateText();
         }
       });
 
-      this.game.greenhouse.storage.metrics.getTotal('bclicked', 'greater', 0).then(function (value) {
+      this.game.greenhouse.reporting.getTotal('bclicked', 'greater', 0).then(function (value) {
         _this3.timesBClickedByAnyone = value;
         _this3.updateText();
       });
@@ -173,13 +173,13 @@ var MenuState = function (_Phaser$State) {
     value: function updateText() {
       this.aButtonText.text = 'Clicked by You: ' + this.timesAClickedByUser;
       this.aButtonText2.text = 'Clicked by Anyone: ' + this.timesAClickedByAnyone;
-      this.aButtonText3.text = 'Last by You: ' + new Date(this.lastAClickedByUser).toLocaleString();
-      this.aButtonText4.text = 'Last by Anyone: ' + new Date(this.lastAClickedByAnyone).toLocaleString();
+      this.aButtonText3.text = 'Last by You: ' + (!this.lastAClickedByUser ? 'never' : new Date(this.lastAClickedByUser).toLocaleString());
+      this.aButtonText4.text = 'Last by Anyone: ' + (!this.lastAClickedByAnyone ? 'never' : new Date(this.lastAClickedByAnyone).toLocaleString());
 
       this.bButtonText.text = 'Clicked by You: ' + this.timesBClickedByUser;
       this.bButtonText2.text = 'Clicked by Anyone: ' + this.timesBClickedByAnyone;
-      this.bButtonText3.text = 'Last by You: ' + new Date(this.lastBClickedByUser).toLocaleString();
-      this.bButtonText4.text = 'Last by Anyone: ' + new Date(this.lastBClickedByAnyone).toLocaleString();
+      this.bButtonText3.text = 'Last by You: ' + (!this.lastBClickedByUser ? 'never' : new Date(this.lastBClickedByUser).toLocaleString());
+      this.bButtonText4.text = 'Last by Anyone: ' + (!this.lastBClickedByAnyone ? 'never' : new Date(this.lastBClickedByAnyone).toLocaleString());
 
       this.responsive();
     }
@@ -204,7 +204,7 @@ var MenuState = function (_Phaser$State) {
     key: 'shutdown',
     value: function shutdown() {
       this.game.greenhouse.responsive.unregister(this.responsive, this);
-      this.game.greenhouse.storage.off();
+      this.game.greenhouse.reporting.clear();
     }
   }]);
 

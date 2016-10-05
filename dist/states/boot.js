@@ -56,7 +56,7 @@ var BootState = function (_Phaser$State) {
 
       this.game.input.maxPointers = 2;
 
-      this.game.greenhouse.storage.auth.requireAuth().then(function () {
+      this.game.greenhouse.auth.requireAuth().then(function () {
         return _this2.game.state.start('menu');
       });
     }
