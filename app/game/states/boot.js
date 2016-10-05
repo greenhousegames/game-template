@@ -30,7 +30,7 @@ class BootState extends Phaser.State {
 
     this.game.input.maxPointers = 2;
 
-    this.game.greenhouse.storage.auth.requireAuth().then(() => this.game.state.start('menu'));
+    this.game.greenhouse.auth.requireAuth().then(() => this.game.state.start('menu'));
   }
 
   update() {

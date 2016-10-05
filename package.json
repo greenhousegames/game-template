@@ -14,9 +14,9 @@
   },
   "main": "dist/index.js",
   "dependencies": {
-    "@greenhousegames/firebase-game-storage": "~0.0.1",
     "@greenhousegames/greenhouse-phaser-plugin": "~0.0.1",
     "firebase": "~3.4.0",
+    "firebase-reporting": "^0.0.1",
     "phaser": "^2.6.2",
     "phaser-ads": "^0.7.5",
     "rsvp": "^3.2.1"

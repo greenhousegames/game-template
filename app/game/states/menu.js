@@ -19,7 +19,7 @@ class MenuState extends Phaser.State {
     this.game.stage.backgroundColor = '#ffffff';
 
     this.initMetrics();
-    this.game.greenhouse.storage.onGamePlayed((game) => {
+    this.game.greenhouse.onGamePlayed((game) => {
       if (game.aclicked) {
         this.timesAClickedByAnyone++;
         this.lastAClickedByAnyone = game.endedAt;
@@ -41,7 +41,7 @@ class MenuState extends Phaser.State {
       this.lastAClickedByUser = (new Date()).getTime();
       this.updateText();
 
-      this.game.greenhouse.storage.saveGamePlayed({
+      this.game.greenhouse.saveGamePlayed({
         aclicked: 1,
         aclickedtime: firebase.database.ServerValue.TIMESTAMP
       });
@@ -57,7 +57,7 @@ class MenuState extends Phaser.State {
       this.lastBClickedByUser = (new Date()).getTime();
       this.updateText();
 
-      this.game.greenhouse.storage.saveGamePlayed({
+      this.game.greenhouse.saveGamePlayed({
         bclicked: 1,
         bclickedtime: firebase.database.ServerValue.TIMESTAMP
       });
@@ -97,7 +97,7 @@ class MenuState extends Phaser.State {
   }
 
   initMetrics() {
-    this.game.greenhouse.storage.metrics.getMetrics().then((metrics) => {
+    this.game.greenhouse.reporting.getMetrics().then((metrics) => {
       if (metrics.aclicked) {
         this.timesAClickedByUser = metrics.aclicked.sum || 0;
       }
@@ -114,26 +114,26 @@ class MenuState extends Phaser.State {
       this.updateText();
     });
 
-    this.game.greenhouse.storage.metrics.getTopMetrics('aclickedtime', 'last', 1).then((values) => {
+    this.game.greenhouse.reporting.getTopMetrics('aclickedtime', 'last', 1).then((values) => {
       if (values[0]) {
         this.lastAClickedByAnyone = values[0];
         this.updateText();
       }
     });
 
-    this.game.greenhouse.storage.metrics.getTotal('aclicked', 'greater', 0).then((value) => {
+    this.game.greenhouse.reporting.getTotal('aclicked', 'greater', 0).then((value) => {
       this.timesAClickedByAnyone = value;
       this.updateText();
     });
 
-    this.game.greenhouse.storage.metrics.getTopMetrics('bclickedtime', 'last', 1).then((values) => {
+    this.game.greenhouse.reporting.getTopMetrics('bclickedtime', 'last', 1).then((values) => {
       if (values[0]) {
         this.lastBClickedByAnyone = values[0];
         this.updateText();
       }
     });
 
-    this.game.greenhouse.storage.metrics.getTotal('bclicked', 'greater', 0).then((value) => {
+    this.game.greenhouse.reporting.getTotal('bclicked', 'greater', 0).then((value) => {
       this.timesBClickedByAnyone = value;
       this.updateText();
     });
@@ -142,13 +142,13 @@ class MenuState extends Phaser.State {
   updateText() {
     this.aButtonText.text = 'Clicked by You: ' + this.timesAClickedByUser;
     this.aButtonText2.text = 'Clicked by Anyone: ' + this.timesAClickedByAnyone;
-    this.aButtonText3.text = 'Last by You: ' + (new Date(this.lastAClickedByUser)).toLocaleString();
-    this.aButtonText4.text = 'Last by Anyone: ' + (new Date(this.lastAClickedByAnyone)).toLocaleString();
+    this.aButtonText3.text = 'Last by You: ' + (!this.lastAClickedByUser ? 'never' : (new Date(this.lastAClickedByUser)).toLocaleString());
+    this.aButtonText4.text = 'Last by Anyone: ' + (!this.lastAClickedByAnyone ? 'never' : (new Date(this.lastAClickedByAnyone)).toLocaleString());
 
     this.bButtonText.text = 'Clicked by You: ' + this.timesBClickedByUser;
     this.bButtonText2.text = 'Clicked by Anyone: ' + this.timesBClickedByAnyone;
-    this.bButtonText3.text = 'Last by You: ' + (new Date(this.lastBClickedByUser)).toLocaleString();
-    this.bButtonText4.text = 'Last by Anyone: ' + (new Date(this.lastBClickedByAnyone)).toLocaleString();
+    this.bButtonText3.text = 'Last by You: ' + (!this.lastBClickedByUser ? 'never' : (new Date(this.lastBClickedByUser)).toLocaleString());
+    this.bButtonText4.text = 'Last by Anyone: ' + (!this.lastBClickedByAnyone ? 'never' : (new Date(this.lastBClickedByAnyone)).toLocaleString());
 
     this.responsive();
   }
@@ -171,7 +171,7 @@ class MenuState extends Phaser.State {
 
   shutdown() {
     this.game.greenhouse.responsive.unregister(this.responsive, this);
-    this.game.greenhouse.storage.off();
+    this.game.greenhouse.reporting.clear();
   }
 }
 

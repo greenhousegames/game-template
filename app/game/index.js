@@ -1,6 +1,6 @@
 import boot from './states/boot';
 import menu from './states/menu';
-import '@greenhousegames/firebase-game-storage';
+import 'firebase-reporting';
 
 class Game extends Phaser.Game {
   constructor(config) {
