@@ -12,14 +12,14 @@ class BootState extends Phaser.State {
     this.game.greenhouse = this.game.plugins.add(new GreenhousePlugin(this));
     this.game.greenhouse.initialize({
       name: 'game-template',
-      assetPath: this.game._greenhouseconfig.assetPath || '/',
       responsive: true,
+      assetPath: this.game._greenhouseconfig.assetPath || '/',
       firebase: this.game._greenhouseconfig.firebase
     });
 
+    this.game.greenhouse.reporting.addFilter('modes', ['mode']);
     this.game.greenhouse.reporting.addFilter('users', ['uid']);
-    this.game.greenhouse.reporting.addFilter('games', ['name']);
-    this.game.greenhouse.reporting.addFilter('gamemodes', ['name', 'mode']);
+    this.game.greenhouse.reporting.addFilter('users-modes', ['mode', 'uid']);
 
     this.game.greenhouse.reporting.addMetric('endedAt', ['first', 'last']);
     this.game.greenhouse.reporting.addMetric('played', ['sum']);
