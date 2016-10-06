@@ -127,45 +127,60 @@ var MenuState = function (_Phaser$State) {
     value: function initMetrics() {
       var _this3 = this;
 
-      this.game.greenhouse.reporting.getMetrics().then(function (metrics) {
-        if (metrics.aclicked) {
-          _this3.timesAClickedByUser = metrics.aclicked.sum || 0;
-        }
-        if (metrics.aclickedtime && metrics.aclickedtime.last) {
-          _this3.lastAClickedByUser = metrics.aclickedtime.last;
-        }
-        if (metrics.bclicked) {
-          _this3.timesBClickedByUser = metrics.bclicked.sum || 0;
-        }
-        if (metrics.bclickedtime && metrics.bclickedtime.last) {
-          _this3.lastBClickedByUser = metrics.bclickedtime.last;
-        }
-
-        _this3.updateText();
-      });
-
-      this.game.greenhouse.reporting.getTopMetrics('aclickedtime', 'last', 1).then(function (values) {
-        if (values[0]) {
-          _this3.lastAClickedByAnyone = values[0];
+      this.game.greenhouse.reporting.where('users', { uid: this.game.greenhouse.auth.currentUserUID() }).sum('aclicked').value().then(function (val) {
+        if (val) {
+          _this3.timesAClickedByUser = val;
           _this3.updateText();
         }
       });
 
-      this.game.greenhouse.reporting.getTotal('aclicked', 'greater', 0).then(function (value) {
-        _this3.timesAClickedByAnyone = value;
-        _this3.updateText();
-      });
-
-      this.game.greenhouse.reporting.getTopMetrics('bclickedtime', 'last', 1).then(function (values) {
-        if (values[0]) {
-          _this3.lastBClickedByAnyone = values[0];
+      this.game.greenhouse.reporting.where('users', { uid: this.game.greenhouse.auth.currentUserUID() }).last('aclickedtime').value().then(function (val) {
+        if (val) {
+          _this3.lastAClickedByUser = val;
           _this3.updateText();
         }
       });
 
-      this.game.greenhouse.reporting.getTotal('bclicked', 'greater', 0).then(function (value) {
-        _this3.timesBClickedByAnyone = value;
-        _this3.updateText();
+      this.game.greenhouse.reporting.where('users', { uid: this.game.greenhouse.auth.currentUserUID() }).sum('bclicked').value().then(function (val) {
+        if (val) {
+          _this3.timesBClickedByUser = val;
+          _this3.updateText();
+        }
+      });
+
+      this.game.greenhouse.reporting.where('users', { uid: this.game.greenhouse.auth.currentUserUID() }).last('bclickedtime').value().then(function (val) {
+        if (val) {
+          _this3.lastBClickedByUser = val;
+          _this3.updateText();
+        }
+      });
+
+      this.game.greenhouse.reporting.where().last('aclickedtime').value().then(function (value) {
+        if (value) {
+          _this3.lastAClickedByAnyone = value;
+          _this3.updateText();
+        }
+      });
+
+      this.game.greenhouse.reporting.where().sum('aclicked').value().then(function (value) {
+        if (value) {
+          _this3.timesAClickedByAnyone = value;
+          _this3.updateText();
+        }
+      });
+
+      this.game.greenhouse.reporting.where().last('bclickedtime').value().then(function (value) {
+        if (value) {
+          _this3.lastBClickedByAnyone = value;
+          _this3.updateText();
+        }
+      });
+
+      this.game.greenhouse.reporting.where().sum('bclicked').value().then(function (value) {
+        if (value) {
+          _this3.timesBClickedByAnyone = value;
+          _this3.updateText();
+        }
       });
     }
   }, {
