@@ -97,45 +97,60 @@ class MenuState extends Phaser.State {
   }
 
   initMetrics() {
-    this.game.greenhouse.reporting.getMetrics().then((metrics) => {
-      if (metrics.aclicked) {
-        this.timesAClickedByUser = metrics.aclicked.sum || 0;
-      }
-      if (metrics.aclickedtime && metrics.aclickedtime.last) {
-        this.lastAClickedByUser = metrics.aclickedtime.last;
-      }
-      if (metrics.bclicked) {
-        this.timesBClickedByUser = metrics.bclicked.sum || 0;
-      }
-      if (metrics.bclickedtime && metrics.bclickedtime.last) {
-        this.lastBClickedByUser = metrics.bclickedtime.last;
-      }
-
-      this.updateText();
-    });
-
-    this.game.greenhouse.reporting.getTopMetrics('aclickedtime', 'last', 1).then((values) => {
-      if (values[0]) {
-        this.lastAClickedByAnyone = values[0];
+    this.game.greenhouse.reporting.where('users', {uid: this.game.greenhouse.auth.currentUserUID()}).sum('aclicked').value().then((val) => {
+      if (val) {
+        this.timesAClickedByUser = val;
         this.updateText();
       }
     });
 
-    this.game.greenhouse.reporting.getTotal('aclicked', 'greater', 0).then((value) => {
-      this.timesAClickedByAnyone = value;
-      this.updateText();
-    });
-
-    this.game.greenhouse.reporting.getTopMetrics('bclickedtime', 'last', 1).then((values) => {
-      if (values[0]) {
-        this.lastBClickedByAnyone = values[0];
+    this.game.greenhouse.reporting.where('users', {uid: this.game.greenhouse.auth.currentUserUID()}).last('aclickedtime').value().then((val) => {
+      if (val) {
+        this.lastAClickedByUser = val;
         this.updateText();
       }
     });
 
-    this.game.greenhouse.reporting.getTotal('bclicked', 'greater', 0).then((value) => {
-      this.timesBClickedByAnyone = value;
-      this.updateText();
+    this.game.greenhouse.reporting.where('users', {uid: this.game.greenhouse.auth.currentUserUID()}).sum('bclicked').value().then((val) => {
+      if (val) {
+        this.timesBClickedByUser = val;
+        this.updateText();
+      }
+    });
+
+    this.game.greenhouse.reporting.where('users', {uid: this.game.greenhouse.auth.currentUserUID()}).last('bclickedtime').value().then((val) => {
+      if (val) {
+        this.lastBClickedByUser = val;
+        this.updateText();
+      }
+    });
+
+    this.game.greenhouse.reporting.where().last('aclickedtime').value().then((value) => {
+      if (value) {
+        this.lastAClickedByAnyone = value;
+        this.updateText();
+      }
+    });
+
+    this.game.greenhouse.reporting.where().sum('aclicked').value().then((value) => {
+      if (value) {
+        this.timesAClickedByAnyone = value;
+        this.updateText();
+      }
+    });
+
+    this.game.greenhouse.reporting.where().last('bclickedtime').value().then((value) => {
+      if (value) {
+        this.lastBClickedByAnyone = value;
+        this.updateText();
+      }
+    });
+
+    this.game.greenhouse.reporting.where().sum('bclicked').value().then((value) => {
+      if (value) {
+        this.timesBClickedByAnyone = value;
+        this.updateText();
+      }
     });
   }
 

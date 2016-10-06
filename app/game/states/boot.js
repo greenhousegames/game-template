@@ -14,14 +14,19 @@ class BootState extends Phaser.State {
       name: 'game-template',
       assetPath: this.game._greenhouseconfig.assetPath || '/',
       responsive: true,
-      firebase: this.game._greenhouseconfig.firebase,
-      metrics: {
-        'aclicked': ['sum'],
-        'aclickedtime': ['last'],
-        'bclicked': ['sum'],
-        'bclickedtime': ['last']
-      }
+      firebase: this.game._greenhouseconfig.firebase
     });
+
+    this.game.greenhouse.reporting.addFilter('users', ['uid']);
+    this.game.greenhouse.reporting.addFilter('games', ['name']);
+    this.game.greenhouse.reporting.addFilter('gamemodes', ['name', 'mode']);
+
+    this.game.greenhouse.reporting.addMetric('endedAt', ['first', 'last']);
+    this.game.greenhouse.reporting.addMetric('played', ['sum']);
+    this.game.greenhouse.reporting.addMetric('aclicked', ['sum']);
+    this.game.greenhouse.reporting.addMetric('aclickedtime', ['last']);
+    this.game.greenhouse.reporting.addMetric('bclicked', ['sum']);
+    this.game.greenhouse.reporting.addMetric('bclickedtime', ['last']);
 
     // enable ads plugin
     this.game.add.plugin(Fabrique.Plugins.AdManager);
