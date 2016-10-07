@@ -8,8 +8,6 @@ var _menu = require('./states/menu');
 
 var _menu2 = _interopRequireDefault(_menu);
 
-require('firebase-reporting');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
