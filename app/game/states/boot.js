@@ -1,4 +1,6 @@
 import GreenhousePlugin from '@greenhousegames/greenhouse-phaser-plugin';
+import Reporting from '../reporting';
+import Config from '../config';
 
 class BootState extends Phaser.State {
   constructor(game) {
@@ -11,22 +13,12 @@ class BootState extends Phaser.State {
     // enable greenhouse plugin
     this.game.greenhouse = this.game.plugins.add(new GreenhousePlugin(this));
     this.game.greenhouse.initialize({
-      name: 'game-template',
-      responsive: true,
+      name: Config.name,
+      responsive: Config.responsive,
       assetPath: this.game._greenhouseconfig.assetPath || '/',
       firebase: this.game._greenhouseconfig.firebase
     });
-
-    this.game.greenhouse.reporting.addFilter('modes', ['mode']);
-    this.game.greenhouse.reporting.addFilter('users', ['uid']);
-    this.game.greenhouse.reporting.addFilter('users-modes', ['mode', 'uid']);
-
-    this.game.greenhouse.reporting.addMetric('endedAt', ['first', 'last']);
-    this.game.greenhouse.reporting.addMetric('played', ['sum']);
-    this.game.greenhouse.reporting.addMetric('aclicked', ['sum']);
-    this.game.greenhouse.reporting.addMetric('aclickedtime', ['last']);
-    this.game.greenhouse.reporting.addMetric('bclicked', ['sum']);
-    this.game.greenhouse.reporting.addMetric('bclickedtime', ['last']);
+    this.game.greenhouse.reporting = new Reporting(this.game._greenhouseconfig.firebase);
 
     // enable ads plugin
     this.game.add.plugin(Fabrique.Plugins.AdManager);
