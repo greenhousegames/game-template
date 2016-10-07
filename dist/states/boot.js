@@ -10,6 +10,14 @@ var _greenhousePhaserPlugin = require('@greenhousegames/greenhouse-phaser-plugin
 
 var _greenhousePhaserPlugin2 = _interopRequireDefault(_greenhousePhaserPlugin);
 
+var _reporting = require('../reporting');
+
+var _reporting2 = _interopRequireDefault(_reporting);
+
+var _config = require('../config');
+
+var _config2 = _interopRequireDefault(_config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -37,22 +45,12 @@ var BootState = function (_Phaser$State) {
       // enable greenhouse plugin
       this.game.greenhouse = this.game.plugins.add(new _greenhousePhaserPlugin2.default(this));
       this.game.greenhouse.initialize({
-        name: 'game-template',
-        responsive: true,
+        name: _config2.default.name,
+        responsive: _config2.default.responsive,
         assetPath: this.game._greenhouseconfig.assetPath || '/',
         firebase: this.game._greenhouseconfig.firebase
       });
-
-      this.game.greenhouse.reporting.addFilter('modes', ['mode']);
-      this.game.greenhouse.reporting.addFilter('users', ['uid']);
-      this.game.greenhouse.reporting.addFilter('users-modes', ['mode', 'uid']);
-
-      this.game.greenhouse.reporting.addMetric('endedAt', ['first', 'last']);
-      this.game.greenhouse.reporting.addMetric('played', ['sum']);
-      this.game.greenhouse.reporting.addMetric('aclicked', ['sum']);
-      this.game.greenhouse.reporting.addMetric('aclickedtime', ['last']);
-      this.game.greenhouse.reporting.addMetric('bclicked', ['sum']);
-      this.game.greenhouse.reporting.addMetric('bclickedtime', ['last']);
+      this.game.greenhouse.reporting = new _reporting2.default(this.game._greenhouseconfig.firebase);
 
       // enable ads plugin
       this.game.add.plugin(Fabrique.Plugins.AdManager);
