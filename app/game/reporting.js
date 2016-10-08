@@ -18,17 +18,15 @@ class GameReporting extends FirebaseReporting {
     this.addMetric('bclicked', ['sum']);
     this.addMetric('bclickedtime', ['last']);
 
-    this.enableRetainer('second', 'aclicked', ['sum']);
-    this.enableRetainer('half-minute', 'aclicked', ['sum']);
     this.enableRetainer('minute', 'aclicked', ['sum']);
-    this.enableRetainer('half-hour', 'aclicked', ['sum']);
     this.enableRetainer('hour', 'aclicked', ['sum']);
+    this.enableRetainer('day', 'aclicked', ['sum']);
+    this.enableRetainer('week', 'aclicked', ['sum']);
 
-    this.enableRetainer('second', 'bclicked', ['sum']);
-    this.enableRetainer('half-minute', 'bclicked', ['sum']);
     this.enableRetainer('minute', 'bclicked', ['sum']);
-    this.enableRetainer('half-hour', 'bclicked', ['sum']);
     this.enableRetainer('hour', 'bclicked', ['sum']);
+    this.enableRetainer('day', 'bclicked', ['sum']);
+    this.enableRetainer('week', 'bclicked', ['sum']);
   }
 }
 
