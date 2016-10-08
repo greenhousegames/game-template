@@ -37,17 +37,15 @@ var GameReporting = function (_FirebaseReporting) {
     _this.addMetric('bclicked', ['sum']);
     _this.addMetric('bclickedtime', ['last']);
 
-    _this.enableRetainer('second', 'aclicked', ['sum']);
-    _this.enableRetainer('half-minute', 'aclicked', ['sum']);
     _this.enableRetainer('minute', 'aclicked', ['sum']);
-    _this.enableRetainer('half-hour', 'aclicked', ['sum']);
     _this.enableRetainer('hour', 'aclicked', ['sum']);
+    _this.enableRetainer('day', 'aclicked', ['sum']);
+    _this.enableRetainer('week', 'aclicked', ['sum']);
 
-    _this.enableRetainer('second', 'bclicked', ['sum']);
-    _this.enableRetainer('half-minute', 'bclicked', ['sum']);
     _this.enableRetainer('minute', 'bclicked', ['sum']);
-    _this.enableRetainer('half-hour', 'bclicked', ['sum']);
     _this.enableRetainer('hour', 'bclicked', ['sum']);
+    _this.enableRetainer('day', 'bclicked', ['sum']);
+    _this.enableRetainer('week', 'bclicked', ['sum']);
     return _this;
   }
 
