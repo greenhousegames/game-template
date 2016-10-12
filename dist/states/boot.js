@@ -50,7 +50,7 @@ var BootState = function (_Phaser$State) {
         assetPath: this.game._greenhouseconfig.assetPath || '/',
         firebase: this.game._greenhouseconfig.firebase
       });
-      this.game.greenhouse.reporting = new _reporting2.default(this.game._greenhouseconfig.firebase);
+      this.game.greenhouse.reporting = new _reporting2.default(this.game.greenhouse.refData(), this.game.greenhouse.refReporting());
 
       // enable ads plugin
       this.game.add.plugin(Fabrique.Plugins.AdManager);

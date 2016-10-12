@@ -46,7 +46,7 @@ var MenuState = function (_Phaser$State) {
       this.game.stage.backgroundColor = '#ffffff';
 
       this.initMetrics();
-      this.game.greenhouse.onGamePlayed(function (game) {
+      this.game.greenhouse.reporting.onDataSaved(function (game) {
         if (game.aclicked) {
           _this2.timesAClickedByAnyone++;
           _this2.lastAClickedByAnyone = game.endedAt;
@@ -68,7 +68,7 @@ var MenuState = function (_Phaser$State) {
         _this2.lastAClickedByUser = new Date().getTime();
         _this2.updateText();
 
-        _this2.game.greenhouse.saveGamePlayed({
+        _this2.game.greenhouse.reporting.saveData({
           aclicked: 1,
           aclickedtime: _firebase2.default.database.ServerValue.TIMESTAMP
         });
@@ -84,7 +84,7 @@ var MenuState = function (_Phaser$State) {
         _this2.lastBClickedByUser = new Date().getTime();
         _this2.updateText();
 
-        _this2.game.greenhouse.saveGamePlayed({
+        _this2.game.greenhouse.reporting.saveData({
           bclicked: 1,
           bclickedtime: _firebase2.default.database.ServerValue.TIMESTAMP
         });
@@ -108,10 +108,9 @@ var MenuState = function (_Phaser$State) {
       this.bButtonText4 = this.game.add.text();
       this.bButtonText4.text = 'Last by Anyone: n/a';
 
-      this.homeButton = this.game.add.sprite(0, 0, this.game.greenhouse.name, 'logo');
+      this.homeButton = this.game.add.sprite(0, 0, this.game.greenhouse.name, 'home');
       this.homeButton.anchor.setTo(0, 1);
       this.homeButton.inputEnabled = true;
-      this.homeButton.tint = 0x000000;
       this.homeButton.events.onInputDown.add(function () {
         window.location = 'http://www.greenhousegames.com';
       }, this);
@@ -127,56 +126,56 @@ var MenuState = function (_Phaser$State) {
     value: function initMetrics() {
       var _this3 = this;
 
-      this.game.greenhouse.reporting.where('users', { uid: this.game.greenhouse.auth.currentUserUID() }).sum('aclicked').value().then(function (val) {
+      this.game.greenhouse.reporting.filter('users', { uid: this.game.greenhouse.auth.currentUserUID() }).sum('aclicked').value().then(function (val) {
         if (val) {
           _this3.timesAClickedByUser = val;
           _this3.updateText();
         }
       });
 
-      this.game.greenhouse.reporting.where('users', { uid: this.game.greenhouse.auth.currentUserUID() }).last('aclickedtime').value().then(function (val) {
+      this.game.greenhouse.reporting.filter('users', { uid: this.game.greenhouse.auth.currentUserUID() }).last('aclickedtime').value().then(function (val) {
         if (val) {
           _this3.lastAClickedByUser = val;
           _this3.updateText();
         }
       });
 
-      this.game.greenhouse.reporting.where('users', { uid: this.game.greenhouse.auth.currentUserUID() }).sum('bclicked').value().then(function (val) {
+      this.game.greenhouse.reporting.filter('users', { uid: this.game.greenhouse.auth.currentUserUID() }).sum('bclicked').value().then(function (val) {
         if (val) {
           _this3.timesBClickedByUser = val;
           _this3.updateText();
         }
       });
 
-      this.game.greenhouse.reporting.where('users', { uid: this.game.greenhouse.auth.currentUserUID() }).last('bclickedtime').value().then(function (val) {
+      this.game.greenhouse.reporting.filter('users', { uid: this.game.greenhouse.auth.currentUserUID() }).last('bclickedtime').value().then(function (val) {
         if (val) {
           _this3.lastBClickedByUser = val;
           _this3.updateText();
         }
       });
 
-      this.game.greenhouse.reporting.where().last('aclickedtime').value().then(function (value) {
+      this.game.greenhouse.reporting.filter().last('aclickedtime').value().then(function (value) {
         if (value) {
           _this3.lastAClickedByAnyone = value;
           _this3.updateText();
         }
       });
 
-      this.game.greenhouse.reporting.where().sum('aclicked').value().then(function (value) {
+      this.game.greenhouse.reporting.filter().sum('aclicked').value().then(function (value) {
         if (value) {
           _this3.timesAClickedByAnyone = value;
           _this3.updateText();
         }
       });
 
-      this.game.greenhouse.reporting.where().last('bclickedtime').value().then(function (value) {
+      this.game.greenhouse.reporting.filter().last('bclickedtime').value().then(function (value) {
         if (value) {
           _this3.lastBClickedByAnyone = value;
           _this3.updateText();
         }
       });
 
-      this.game.greenhouse.reporting.where().sum('bclicked').value().then(function (value) {
+      this.game.greenhouse.reporting.filter().sum('bclicked').value().then(function (value) {
         if (value) {
           _this3.timesBClickedByAnyone = value;
           _this3.updateText();
