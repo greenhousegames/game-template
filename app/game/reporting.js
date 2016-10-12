@@ -1,11 +1,15 @@
 import FirebaseReporting from 'firebase-reporting';
-import Config from './config';
+import rsvp from 'rsvp';
+import firebase from 'firebase';
 
 class GameReporting extends FirebaseReporting {
-  constructor(firebase) {
+  constructor(refData, refReporting) {
     super({
-      firebase: firebase.database().ref('reporting').child(Config.name)
+      firebase: refReporting
     });
+
+    this._refData = refData;
+    this._onSavedQuery = null;
 
     this.addFilter('modes', ['mode']);
     this.addFilter('users', ['uid']);
@@ -27,6 +31,50 @@ class GameReporting extends FirebaseReporting {
     this.enableRetainer('hour', 'bclicked', ['sum']);
     this.enableRetainer('day', 'bclicked', ['sum']);
     this.enableRetainer('week', 'bclicked', ['sum']);
+  }
+
+  saveData(data, phaserGame) {
+    const origKeys = Object.keys(data);
+    const gamedata = {
+      endedAt: firebase.database.ServerValue.TIMESTAMP,
+      played: 1
+    };
+    if (phaserGame) {
+      gamedata.uid = phaserGame.greenhouse.auth.currentUserUID();
+      gamedata.mode = phaserGame.greenhouse.mode;
+      gamedata.name = phaserGame.greenhouse.name;
+    }
+    origKeys.forEach((key) => {
+      gamedata[key] = data[key];
+    });
+
+    const promise = new rsvp.Promise((resolve, reject) => {
+      const promises = [];
+      promises.push(this._refData.push().set(gamedata));
+      promises.push(this.saveMetrics(gamedata));
+
+      rsvp.all(promises).then(resolve).catch(reject);
+    });
+    return promise;
+  }
+
+  onDataSaved(cb) {
+    if (this._onSavedQuery) {
+      this._onSavedQuery.off();
+    }
+    this._onSavedQuery = this._refData.orderByChild('endedAt');
+
+    this._onSavedQuery.limitToLast(1).once('value', (snapshot) => {
+      const games = snapshot.val();
+      const keys = games ? Object.keys(games) : null;
+
+      if (keys && keys.length > 0) {
+        query = query.startAt(games[keys[0]].endedAt + 1);
+      }
+
+      // setup listener
+      this._onSavedQuery.on('child_added', (snap) => cb(snap.val()));
+    });
   }
 }
 
