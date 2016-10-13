@@ -85,7 +85,7 @@ class MenuState extends Phaser.State {
     this.homeButton.anchor.setTo(0, 1);
     this.homeButton.inputEnabled = true;
     this.homeButton.events.onInputDown.add(() => {
-      window.location = 'http://www.greenhousegames.com';
+      window.location = 'https://www.greenhousegames.com';
     }, this);
 
     this.game.greenhouse.responsive.register(this.responsive, this);

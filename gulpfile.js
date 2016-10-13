@@ -83,8 +83,8 @@ gulp.task('spritesheet-css', function() {
 
 gulp.task('phaser', function() {
   return gulp.src([
-    'node_modules/phaser/build/custom/pixi.min.js',
-    'node_modules/phaser/build/custom/phaser-no-physics.min.js',
+    'node_modules/phaser/build/pixi.min.js',
+    'node_modules/phaser/build/phaser.min.js',
     'node_modules/phaser-ads/build/phaser-ads.min.js'
   ])
     .pipe(concat('phaser.js'))
