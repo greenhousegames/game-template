@@ -69,7 +69,7 @@ class GameReporting extends FirebaseReporting {
       const keys = games ? Object.keys(games) : null;
 
       if (keys && keys.length > 0) {
-        query = query.startAt(games[keys[0]].endedAt + 1);
+        this._onSavedQuery = this._onSavedQuery.startAt(games[keys[0]].endedAt + 1);
       }
 
       // setup listener
