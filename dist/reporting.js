@@ -6,10 +6,6 @@ var _firebaseReporting = require('firebase-reporting');
 
 var _firebaseReporting2 = _interopRequireDefault(_firebaseReporting);
 
-var _rsvp = require('rsvp');
-
-var _rsvp2 = _interopRequireDefault(_rsvp);
-
 var _firebase = require('firebase');
 
 var _firebase2 = _interopRequireDefault(_firebase);
@@ -77,12 +73,12 @@ var GameReporting = function (_FirebaseReporting) {
         gamedata[key] = data[key];
       });
 
-      var promise = new _rsvp2.default.Promise(function (resolve, reject) {
+      var promise = new Promise(function (resolve, reject) {
         var promises = [];
         promises.push(_this2._refData.push().set(gamedata));
         promises.push(_this2.saveMetrics(gamedata));
 
-        _rsvp2.default.all(promises).then(resolve).catch(reject);
+        Promise.all(promises).then(resolve).catch(reject);
       });
       return promise;
     }
