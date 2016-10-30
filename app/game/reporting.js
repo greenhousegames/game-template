@@ -1,5 +1,4 @@
 import FirebaseReporting from 'firebase-reporting';
-import rsvp from 'rsvp';
 import firebase from 'firebase';
 
 class GameReporting extends FirebaseReporting {
@@ -48,12 +47,12 @@ class GameReporting extends FirebaseReporting {
       gamedata[key] = data[key];
     });
 
-    const promise = new rsvp.Promise((resolve, reject) => {
+    const promise = new Promise((resolve, reject) => {
       const promises = [];
       promises.push(this._refData.push().set(gamedata));
       promises.push(this.saveMetrics(gamedata));
 
-      rsvp.all(promises).then(resolve).catch(reject);
+      Promise.all(promises).then(resolve).catch(reject);
     });
     return promise;
   }
