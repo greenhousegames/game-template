@@ -5,11 +5,11 @@ import Game from './game';
 fs.FastClick.attach(document.body);
 
 const firebaseInst = firebase.initializeApp({
-  apiKey: 'AIzaSyCqcbh9XmZZBahTDxmj4GXbwQny9H9wHdo',
-  authDomain: 'greenhouse-games-test.firebaseapp.com',
-  databaseURL: 'https://greenhouse-games-test.firebaseio.com',
+  apiKey: '',
+  authDomain: '',
+  databaseURL: '',
   storageBucket: '',
-  messagingSenderId: '756331628096'
+  messagingSenderId: ''
 });
 
 const game = new Game({
